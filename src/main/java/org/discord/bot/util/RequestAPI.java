@@ -14,7 +14,7 @@ public class RequestAPI {
         StringBuffer response = new StringBuffer();
 
         // FIXME:: Received fatal alert: handshake_failure 임시해결
-        System.setProperty( "https.protocols", "TLSv1" );
+        System.setProperty( "https.protocols", "TLSv1.2" );
 
         URL requestUrl = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
