@@ -90,16 +90,16 @@ public class RequestAPI {
                 }
             }
 
+            // 요청 설정
+            connection.setConnectTimeout(10000);    // timeout = 10초
+            connection.setReadTimeout(5000);        // 컨텐츠 조회 timeout = 5초
+            connection.setDoOutput(true);           // 항상 갱신된 내용 가져오도록
+
             // 파라미터
             try (DataOutputStream dos = new DataOutputStream(connection.getOutputStream())) {
                 dos.write(param.getBytes());
                 dos.flush();
             }
-
-            // 요청 설정
-            connection.setConnectTimeout(10000);    // timeout = 10초
-            connection.setReadTimeout(5000);        // 컨텐츠 조회 timeout = 5초
-            connection.setDoOutput(true);           // 항상 갱신된 내용 가져오도록
 
             // 요청 결과
             int responseCode = connection.getResponseCode();

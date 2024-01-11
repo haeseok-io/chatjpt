@@ -2,12 +2,16 @@ package org.discord.bot.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.discord.bot.util.JsonConvert;
 import org.discord.bot.util.RequestAPI;
 
 import java.util.Map;
 
 public class RandomDogImage implements CommandAction {
+    public static final String COMMAND_NAME = "랜덤강아지";
+
     @Override
     public String getDescription() {
         return "무작위 강아지 이미지를 가져옵니다.";
@@ -31,5 +35,11 @@ public class RandomDogImage implements CommandAction {
             e.printStackTrace();
             event.reply("데이터 처리중 오류 발생").setEphemeral(true).queue();
         }
+    }
+
+    @Override
+    public SlashCommandData build() {
+        SlashCommandData commandData = Commands.slash(COMMAND_NAME, getDescription());
+        return commandData;
     }
 }

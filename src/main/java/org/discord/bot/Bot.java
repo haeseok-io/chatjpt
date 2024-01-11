@@ -10,23 +10,24 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.discord.bot.command.CommandAction;
+import org.discord.bot.command.PapagoTranslate;
 import org.discord.bot.command.Ping;
 import org.discord.bot.command.RandomDogImage;
 import org.discord.bot.message.MessageAction;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 public class Bot extends ListenerAdapter {
-    private final static String prefix = "jpt:";
+    private static Dotenv dotenv = Dotenv.load();
+    private static final String PREFIX = "jpt:";
+    private static final String TOKEN = dotenv.get("DISCORD_CLIENT_TOKEN");
 
     public static void main(String[] args) throws IOException {
-        // Get Token
-        Dotenv dotenv = Dotenv.load();
-        String TOKEN = dotenv.get("TOKEN");
-
         // 사용할 이벤트 정의
         EnumSet<GatewayIntent> intents = EnumSet.of(
             // Enables MessageReceivedEvent for guild (also known as servers)
@@ -49,8 +50,9 @@ public class Bot extends ListenerAdapter {
 
         // 슬래시 커멘드 정의
         jda.updateCommands().addCommands(
-            Commands.slash("ping", new Ping().getDescription()),
-            Commands.slash("랜덤강아지", new RandomDogImage().getDescription())
+                new Ping().build(),
+                new RandomDogImage().build(),
+                new PapagoTranslate().build()
         ).queue();
     }
 
@@ -69,11 +71,11 @@ public class Bot extends ListenerAdapter {
 
         // 명령어
         switch ( message.getContentRaw() ) {
-            case prefix+"ping" :
-                action = new org.discord.bot.message.Ping();
-                action.execute(event);
-                break;
+            case PREFIX+"ping" : action = new org.discord.bot.message.Ping(); break;
         }
+
+        // 실행
+        action.execute(event);
     }
 
     @Override
@@ -83,6 +85,7 @@ public class Bot extends ListenerAdapter {
         switch (event.getName()){
             case "ping" : action = new org.discord.bot.command.Ping(); break;
             case "랜덤강아지" : action = new RandomDogImage(); break;
+            case "파파고번역" : action = new PapagoTranslate(); break;
         }
 
         // 커맨드 실행
