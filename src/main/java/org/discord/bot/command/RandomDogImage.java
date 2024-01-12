@@ -19,11 +19,10 @@ public class RandomDogImage implements CommandAction {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        RequestAPI requestAPI = new RequestAPI();
 
         try {
             // API 요청
-            String jsonData = requestAPI.get("https://dog.ceo/api/breeds/image/random", null, null);
+            String jsonData = RequestAPI.get("https://dog.ceo/api/breeds/image/random", null, null);
             Map<String, Object> data = JsonConvert.jsonToMap(jsonData);
 
             // Embed 전송
