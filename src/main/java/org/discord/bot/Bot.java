@@ -85,7 +85,7 @@ public class Bot extends ListenerAdapter {
         switch (event.getName()){
             case "ping" : action = new org.discord.bot.command.Ping(); break;
             case "랜덤강아지" : action = new RandomDogImage(); break;
-            case "파파고번역" : action = new PapagoTranslate(); break;
+            case "번역" : action = new PapagoTranslate(); break;
         }
 
         // 커맨드 실행

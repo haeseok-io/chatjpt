@@ -7,17 +7,21 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.discord.bot.util.JsonConvert;
 import org.discord.bot.util.Papago;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PapagoTranslate implements CommandAction {
-    private static final String COMMAND_NAME = "파파고번역";
+    private static final String COMMAND_NAME = "번역";
 
     @Override
     public String getDescription() {
-        return "네이버 파파고 번역";
+        return "입력한 내용을 번역합니다.";
     }
 
     @Override
@@ -27,23 +31,32 @@ public class PapagoTranslate implements CommandAction {
 
         try {
             String detectResponse = Papago.requestDetect(inputOption.getAsString());
-            Map<String, Object> detectData = Papago.convertData(detectResponse);
+            Map<String, Object> detectData = JsonConvert.jsonToMap(detectResponse);
 
             String transResponse = Papago.requestTrans(detectData.get("langCode").toString(), choiceOption.getAsString(), inputOption.getAsString());
-            Map<String, Object> transData = Papago.convertData(transResponse);
+            Map<String, Object> transData = JsonConvert.jsonToMap(transResponse);
 
-            //Map<String, Object> resultData = Papago.convertData();
-            System.out.println(transData.get("message").toString().replaceAll("\\{type=[^}]*, service=[^}]*, version=[^}]*, ", ""));
-
-
+            Map<String, Object> messageData = (Map<String, Object>) transData.get("message");
+            Map<String, Object> resultData = (Map<String, Object>) messageData.get("result");
 
 
+            // 문자열 가공
+            String inputLang = Papago.LANGUAGE.get(resultData.get("srcLangType"));
+            String outputLang = Papago.LANGUAGE.get(resultData.get("tarLangType"));
+            String inputText = inputOption.getAsString();
+            String outputText = resultData.get("translatedText").toString();
 
             // 전송
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("파파고 번역 결과");
-            event.replyEmbeds(embed.build()).setEphemeral(false).queue();
 
+            embed.setTitle("번역 결과");
+            embed.setDescription("요청해주신 내용을 감지하여 번역된 결과 입니다.");
+            embed.setColor(0x00ff00);
+
+            embed.addField("⬅️ 요청내용 ("+inputLang+")", inputText, true);
+            embed.addField("➡️ 번역내용 ("+outputLang+")", outputText, false);
+            
+            event.replyEmbeds(embed.build()).setEphemeral(false).queue();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
