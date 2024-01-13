@@ -12,10 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.discord.bot.command.CommandAction;
-import org.discord.bot.command.PapagoTranslate;
-import org.discord.bot.command.Ping;
-import org.discord.bot.command.RandomDogImage;
+import org.discord.bot.command.*;
 import org.discord.bot.message.MessageAction;
 
 import java.io.IOException;
@@ -52,7 +49,8 @@ public class Bot extends ListenerAdapter {
         jda.updateCommands().addCommands(
                 new Ping().build(),
                 new RandomDogImage().build(),
-                new PapagoTranslate().build()
+                new PapagoTranslate().build(),
+                new CreateAiImage().build()
         ).queue();
     }
 
@@ -71,11 +69,11 @@ public class Bot extends ListenerAdapter {
 
         // 명령어
         switch ( message.getContentRaw() ) {
-            case PREFIX+"ping" : action = new org.discord.bot.message.Ping(); break;
+            case PREFIX+"ping" :
+                action = new org.discord.bot.message.Ping();
+                action.execute(event);
+                break;
         }
-
-        // 실행
-        action.execute(event);
     }
 
     @Override
@@ -83,12 +81,22 @@ public class Bot extends ListenerAdapter {
         CommandAction action = null;
 
         switch (event.getName()){
-            case "ping" : action = new org.discord.bot.command.Ping(); break;
-            case "랜덤강아지" : action = new RandomDogImage(); break;
-            case "번역" : action = new PapagoTranslate(); break;
+            case "ping" :
+                action = new org.discord.bot.command.Ping();
+                action.execute(event);
+                break;
+            case "랜덤강아지" :
+                action = new RandomDogImage();
+                action.execute(event);
+                break;
+            case "번역" :
+                action = new PapagoTranslate();
+                action.execute(event);
+                break;
+            case "이미지생성" :
+                action = new CreateAiImage();
+                action.execute(event);
+                break;
         }
-
-        // 커맨드 실행
-        action.execute(event);
     }
 }

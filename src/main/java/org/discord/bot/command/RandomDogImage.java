@@ -25,9 +25,12 @@ public class RandomDogImage implements CommandAction {
             String jsonData = RequestAPI.get("https://dog.ceo/api/breeds/image/random", null, null);
             Map<String, Object> data = JsonConvert.jsonToMap(jsonData);
 
+
+            System.out.println(data.get("message").toString());
             // Embed 전송
             EmbedBuilder embed = new EmbedBuilder();
             embed.setImage(data.get("message").toString());
+//            embed.setImage("https://mk.kakaocdn.net/dna/karlo/image/2024-01-14/1/ee4d684f-035d-442f-abfc-df85dea0ade8.webp?credential=smxRqiqUEJBVgohptvfXS5JoYeFv4Xxa&expires=1705162600&signature=AvnrM7BrZ3lwnSvKuVc%2BpN4U8Z8%3D");
 
             event.replyEmbeds(embed.build()).setEphemeral(false).queue();
         } catch (Exception e) {
