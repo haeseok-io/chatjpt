@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.discord.bot.util.JsonConvert;
 import org.discord.bot.util.RequestAPI;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class RandomDogImage implements CommandAction {
@@ -30,10 +31,9 @@ public class RandomDogImage implements CommandAction {
             // Embed 전송
             EmbedBuilder embed = new EmbedBuilder();
             embed.setImage(data.get("message").toString());
-//            embed.setImage("https://mk.kakaocdn.net/dna/karlo/image/2024-01-14/1/ee4d684f-035d-442f-abfc-df85dea0ade8.webp?credential=smxRqiqUEJBVgohptvfXS5JoYeFv4Xxa&expires=1705162600&signature=AvnrM7BrZ3lwnSvKuVc%2BpN4U8Z8%3D");
 
             event.replyEmbeds(embed.build()).setEphemeral(false).queue();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             event.reply("데이터 처리중 오류 발생").setEphemeral(true).queue();
         }

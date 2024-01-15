@@ -19,24 +19,20 @@ public class RequestAPI {
         }
     }
 
-    private static String readBody(InputStream body) {
+    private static String readBody(InputStream body) throws IOException {
         InputStreamReader streamReader = new InputStreamReader(body);
         StringBuffer responseBody = new StringBuffer();
 
-        try (BufferedReader lineReader = new BufferedReader(streamReader)) {
-
-            String line;
-            while( (line = lineReader.readLine()) != null ) {
-                responseBody.append(line);
-            }
-        } catch (IOException e){
-            throw new RuntimeException("API 응답 실패", e);
+        String line;
+        BufferedReader lineReader = new BufferedReader(streamReader);
+        while( (line = lineReader.readLine()) != null ) {
+            responseBody.append(line);
         }
 
         return responseBody.toString();
     }
 
-    public static String get(String url, Map<String, String> header, String param) {
+    public static String get(String url, Map<String, String> header, String param) throws IOException {
         String result = null;
         HttpURLConnection connection = connect(url+"?"+param);
 
@@ -44,35 +40,30 @@ public class RequestAPI {
         System.setProperty( "https.protocols", "TLSv1.2" );
 
         // API 요청
-        try {
-            connection.setRequestMethod("GET");
+        connection.setRequestMethod("GET");
 
-            // 헤더추가
-            if( header!=null ) {
-                for(Map.Entry<String, String> entry : header.entrySet()) {
-                    connection.setRequestProperty(entry.getKey(), entry.getValue());
-                }
+        // 헤더추가
+        if( header!=null ) {
+            for(Map.Entry<String, String> entry : header.entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
             }
-
-            connection.setConnectTimeout(10000);    // timeout = 10초
-            connection.setReadTimeout(5000);        // 컨텐츠 조회 timeout = 5초
-            connection.setDoOutput(true);           // 항상 갱신된 내용 가져오도록
-
-            // 요청 결과
-            int responseCode = connection.getResponseCode();
-            if( responseCode == HttpURLConnection.HTTP_OK ) result = readBody(connection.getInputStream());
-            else result = readBody(connection.getErrorStream());
-
-        } catch(IOException e) {
-            throw new RuntimeException("API 요청 실패", e);
-        } finally {
-            connection.disconnect();
         }
+
+        connection.setConnectTimeout(10000);    // timeout = 10초
+        connection.setReadTimeout(5000);        // 컨텐츠 조회 timeout = 5초
+        connection.setDoOutput(true);           // 항상 갱신된 내용 가져오도록
+
+        // 요청 결과
+        int responseCode = connection.getResponseCode();
+        if( responseCode == HttpURLConnection.HTTP_OK ) result = readBody(connection.getInputStream());
+        else result = readBody(connection.getErrorStream());
+
+        connection.disconnect();
 
         return result;
     }
 
-    public static String post(String url, Map<String, String> header, String param) {
+    public static String post(String url, Map<String, String> header, String param) throws IOException {
         String result = null;
         HttpURLConnection connection = connect(url);
 
@@ -80,37 +71,32 @@ public class RequestAPI {
         System.setProperty( "https.protocols", "TLSv1.2" );
 
         // API 요청
-        try {
-            connection.setRequestMethod("POST");
+        connection.setRequestMethod("POST");
 
-            // 헤더추가
-            if( header!=null ) {
-                for(Map.Entry<String, String> entry : header.entrySet()) {
-                    connection.setRequestProperty(entry.getKey(), entry.getValue());
-                }
+        // 헤더추가
+        if( header!=null ) {
+            for(Map.Entry<String, String> entry : header.entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
             }
-
-            // 요청 설정
-            connection.setConnectTimeout(10000);    // timeout = 10초
-            connection.setReadTimeout(5000);        // 컨텐츠 조회 timeout = 5초
-            connection.setDoOutput(true);           // 항상 갱신된 내용 가져오도록
-
-            // 파라미터
-            try (DataOutputStream dos = new DataOutputStream(connection.getOutputStream())) {
-                dos.write(param.getBytes());
-                dos.flush();
-            }
-
-            // 요청 결과
-            int responseCode = connection.getResponseCode();
-            if( responseCode == HttpURLConnection.HTTP_OK ) result = readBody(connection.getInputStream());
-            else result = readBody(connection.getErrorStream());
-
-        } catch(IOException e) {
-            throw new RuntimeException("API 요청 실패", e);
-        } finally {
-            connection.disconnect();
         }
+
+        // 요청 설정
+        connection.setConnectTimeout(10000);    // timeout = 10초
+        connection.setReadTimeout(5000);        // 컨텐츠 조회 timeout = 5초
+        connection.setDoOutput(true);           // 항상 갱신된 내용 가져오도록
+
+        // 파라미터
+        try (DataOutputStream dos = new DataOutputStream(connection.getOutputStream())) {
+            dos.write(param.getBytes());
+            dos.flush();
+        }
+
+        // 요청 결과
+        int responseCode = connection.getResponseCode();
+        if( responseCode == HttpURLConnection.HTTP_OK ) result = readBody(connection.getInputStream());
+        else result = readBody(connection.getErrorStream());
+
+        connection.disconnect();
 
         return result;
     }

@@ -9,14 +9,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.discord.bot.command.*;
 import org.discord.bot.message.MessageAction;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumSet;
 
 public class Bot extends ListenerAdapter {

@@ -14,6 +14,7 @@ import org.discord.bot.util.JsonConvert;
 import org.discord.bot.util.Papago;
 import org.discord.bot.util.RequestAPI;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class CreateAiImage implements CommandAction {
 
                     message.editMessage("✅ 이미지 생성 완료").queue();
                     message.editMessageEmbeds(embed.build()).queue();
-                } catch(Exception e){
+                } catch(IOException e){
                     e.printStackTrace();
                 }
             });

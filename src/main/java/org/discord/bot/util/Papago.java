@@ -30,7 +30,7 @@ public class Papago {
     };
 
     // 언어 감지
-    public static String requestDetect(String text) {
+    public static String requestDetect(String text) throws IOException {
         String requestUrl = "https://openapi.naver.com/v1/papago/detectLangs";
 
         // 요청 헤더
@@ -42,7 +42,7 @@ public class Papago {
         return RequestAPI.post(requestUrl, requestHeader, "query="+text);
     }
 
-    public static String requestTrans(String source, String target, String text) {
+    public static String requestTrans(String source, String target, String text) throws IOException {
         String requestUrl = "https://openapi.naver.com/v1/papago/n2mt";
 
         // 요청 헤더
@@ -54,7 +54,7 @@ public class Papago {
         return RequestAPI.post(requestUrl, requestHeader, "source="+source+"&target="+target+"&text="+text);
     }
 
-    public static Map<String, Object> requestDetectTrans(String target, String text) throws Exception {
+    public static Map<String, Object> requestDetectTrans(String target, String text) throws IOException {
         Map<String, Object> result = new HashMap<>();
         result.put("outLanguage", target);
 

@@ -7,14 +7,10 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
-import org.discord.bot.util.JsonConvert;
 import org.discord.bot.util.Papago;
 
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PapagoTranslate implements CommandAction {
     private static final String COMMAND_NAME = "번역";
@@ -45,7 +41,7 @@ public class PapagoTranslate implements CommandAction {
             embed.addField("➡️ 번역내용 ("+outLanguage+")", transData.get("transText").toString(), false);
             
             event.replyEmbeds(embed.build()).setEphemeral(false).queue();
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
