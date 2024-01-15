@@ -35,24 +35,8 @@ public class CreateAiImage implements CommandAction {
         event.deferReply().queue(hook -> {
             hook.sendMessage("🤖 이미지 생성중...").queue(message -> {
                 try {
-                    String inputText = "";
-
-                    // 입력한 언어 확인
-                    String detectResponse = Papago.requestDetect(inputOption.getAsString());
-                    Map<String, Object> detectData = JsonConvert.jsonToMap(detectResponse);
-
-                    // 입력한 언어 영어로 변환
-                    if( detectData.get("langCode").equals("en") ){
-                        inputText = inputOption.getAsString();
-                    } else {
-                        String transResponse = Papago.requestTrans(detectData.get("langCode").toString(), "en", inputOption.getAsString());
-                        Map<String, Object> transData = JsonConvert.jsonToMap(transResponse);
-
-                        Map<String, Object> messageData = (Map<String, Object>) transData.get("message");
-                        Map<String, Object> languageData = (Map<String, Object>) messageData.get("result");
-
-                        inputText = languageData.get("translatedText").toString();
-                    }
+                    // 입력받은 문자 영어로 변환
+                    Map<String, Object> transData = Papago.requestDetectTrans("en", inputOption.getAsString());
 
                     // 카카오 이미지 생성 요청
                     String requestUrl = "https://api.kakaobrain.com/v2/inference/karlo/t2i";
@@ -62,10 +46,8 @@ public class CreateAiImage implements CommandAction {
 
                     // 요청 정보
                     ObjectMapper mapper = new ObjectMapper();
-                    RequestKarloDTO requestData = new RequestKarloDTO(inputText);
-
+                    RequestKarloDTO requestData = new RequestKarloDTO(transData.get("transText").toString());
                     String requestJson = mapper.writeValueAsString(requestData);
-
                     String response = RequestAPI.post(requestUrl, requestHeader, requestJson);
                     Map<String, Object> responseData = JsonConvert.jsonToMap(response);
 
@@ -76,7 +58,6 @@ public class CreateAiImage implements CommandAction {
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setTitle("🖼️ "+inputOption.getAsString());
                     embed.setImage(imageData.get("image").toString());
-
 
                     message.editMessage("✅ 이미지 생성 완료").queue();
                     message.editMessageEmbeds(embed.build()).queue();

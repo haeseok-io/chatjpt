@@ -30,21 +30,9 @@ public class PapagoTranslate implements CommandAction {
         OptionMapping inputOption = event.getOption("번역내용");
 
         try {
-            String detectResponse = Papago.requestDetect(inputOption.getAsString());
-            Map<String, Object> detectData = JsonConvert.jsonToMap(detectResponse);
-
-            String transResponse = Papago.requestTrans(detectData.get("langCode").toString(), choiceOption.getAsString(), inputOption.getAsString());
-            Map<String, Object> transData = JsonConvert.jsonToMap(transResponse);
-
-            Map<String, Object> messageData = (Map<String, Object>) transData.get("message");
-            Map<String, Object> resultData = (Map<String, Object>) messageData.get("result");
-
-
-            // 문자열 가공
-            String inputLang = Papago.LANGUAGE.get(resultData.get("srcLangType"));
-            String outputLang = Papago.LANGUAGE.get(resultData.get("tarLangType"));
-            String inputText = inputOption.getAsString();
-            String outputText = resultData.get("translatedText").toString();
+            Map<String, Object> transData = Papago.requestDetectTrans(choiceOption.getAsString(), inputOption.getAsString());
+            String inLanguage = Papago.LANGUAGE.get(transData.get("inLanguage").toString());
+            String outLanguage = Papago.LANGUAGE.get(transData.get("outLanguage").toString());
 
             // 전송
             EmbedBuilder embed = new EmbedBuilder();
@@ -53,11 +41,11 @@ public class PapagoTranslate implements CommandAction {
             embed.setDescription("요청해주신 내용을 감지하여 번역된 결과 입니다.");
             embed.setColor(0x00ff00);
 
-            embed.addField("⬅️ 요청내용 ("+inputLang+")", inputText, true);
-            embed.addField("➡️ 번역내용 ("+outputLang+")", outputText, false);
+            embed.addField("⬅️ 요청내용 ("+inLanguage+")", inputOption.getAsString(), true);
+            embed.addField("➡️ 번역내용 ("+outLanguage+")", transData.get("transText").toString(), false);
             
             event.replyEmbeds(embed.build()).setEphemeral(false).queue();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

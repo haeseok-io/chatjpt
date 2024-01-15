@@ -54,4 +54,31 @@ public class Papago {
         return RequestAPI.post(requestUrl, requestHeader, "source="+source+"&target="+target+"&text="+text);
     }
 
+    public static Map<String, Object> requestDetectTrans(String target, String text) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        result.put("outLanguage", target);
+
+        // 언어 감지
+        String detectResponse = Papago.requestDetect(text);
+        Map<String, Object> detectData = JsonConvert.jsonToMap(detectResponse);
+
+        String detectLanguage = detectData.get("langCode").toString();
+        result.put("inLanguage", detectLanguage);
+
+        // 번역
+        // - 감지된 언어와 번역하려는 언어가 같을 경우
+        if( detectLanguage.equals(target) ) {
+            result.put("transText", text);
+            return result;
+        }
+
+        String transResponse = Papago.requestTrans(detectLanguage, target, text);
+        Map<String, Object> transData = JsonConvert.jsonToMap(transResponse);
+        Map<String, Object> messageData = (Map<String, Object>) transData.get("message");
+        Map<String, Object> resultData = (Map<String, Object>) messageData.get("result");
+        result.put("transText", resultData.get("translatedText").toString());
+
+        return result;
+    }
+
 }
