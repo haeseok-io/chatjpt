@@ -5,6 +5,7 @@ target/
 
 ### Setting ###
 .env
+resources/location_info.xlsx
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
