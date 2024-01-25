@@ -47,7 +47,8 @@ public class Bot extends ListenerAdapter {
                 new Ping().build(),
                 new RandomDogImage().build(),
                 new PapagoTranslate().build(),
-                new CreateAiImage().build()
+                new CreateAiImage().build(),
+                new Weather().build()
         ).queue();
     }
 
@@ -92,6 +93,10 @@ public class Bot extends ListenerAdapter {
                 break;
             case "이미지생성" :
                 action = new CreateAiImage();
+                action.execute(event);
+                break;
+            case "날씨" :
+                action = new Weather();
                 action.execute(event);
                 break;
         }

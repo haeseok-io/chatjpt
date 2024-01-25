@@ -1,12 +1,9 @@
 package org.discord.bot;
 
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.discord.bot.util.WeatherData;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class TestMain {
     public static void main(String[] args) throws IOException {
@@ -18,36 +15,10 @@ public class TestMain {
         //
         //System.out.println(jsonData);
 
-        try {
-            FileInputStream file = new FileInputStream("/Users/haeseok/Desktop/dev/java/discord/chatjpt/src/main/resources/location_info.xlsx");
-            XSSFWorkbook workbook = new XSSFWorkbook(file);
+        WeatherData wd = new WeatherData();
+        List<String> list = wd.getWeatherSi();
 
-            int rowNo = 0;
-            int cellIndex = 0;
-
-            // 0 번째 시트 가져오기
-            XSSFSheet sheet = workbook.getSheetAt(0);
-
-            // row 수 가져오기
-            int rows = sheet.getPhysicalNumberOfRows();
-            for(rowNo = 0; rowNo<rows; rowNo++) {
-                XSSFRow row = sheet.getRow(rowNo);
-
-                if( row!=null ) {
-                    // 해당 row 에 존재하는 cell 갯수를 가져온다
-                    int cells = row.getPhysicalNumberOfCells();
-
-                    for(cellIndex = 0; cellIndex<cells; cellIndex++) {
-                        XSSFCell cell = row.getCell(cellIndex);
-                    }
-                }
-            }
-
-            System.out.println(rows);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        System.out.println(list);
     }
+
 }

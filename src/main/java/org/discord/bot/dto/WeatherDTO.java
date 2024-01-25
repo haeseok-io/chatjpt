@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RequestKarloDTO {
-    private String prompt;
+public class WeatherDTO {
+    private String si;
+    private String gu;
+    private String dong;
+    private String x;
+    private String y;
 }
